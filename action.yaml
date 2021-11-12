@@ -22,6 +22,5 @@ runs:
   env:
     GITHUB_TOKEN: "${{ inputs.GITHUB_TOKEN }}"
   args:
-    - "-maxretry=${{ inputs.maxretry }}"
     - "-exemptlabel=${{ inputs.exempt-labels }}"
     - "-requiredlabel=${{ inputs.required-labels }}"

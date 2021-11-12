@@ -10,7 +10,7 @@ jobs:
   retest:
     runs-on: ubuntu-latest
     steps:
-      - uses: Madhu-1/retest-action@v0.0.1
+      - uses: Madhu-1/retest-action@v0.0.2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           required-label: "retest-required"

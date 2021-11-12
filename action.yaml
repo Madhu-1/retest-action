@@ -6,11 +6,11 @@ inputs:
     description: "Maximum retry of retest of a test in a Pull Request"
     required: false
     default: "5"
-  exempt-labels:
+  exempt-label:
     description: "Labels to skip running the retest"
     required: false
     default: "DNM"
-  required-labels:
+  required-label:
     description: "required Label on Pull Request to run retest"
     required: true
   GITHUB_TOKEN:
@@ -23,5 +23,5 @@ runs:
     GITHUB_TOKEN: "${{ inputs.GITHUB_TOKEN }}"
   args:
     - "-maxretry=${{ inputs.maxretry }}"
-    - "-exemptlabels=${{ inputs.exempt-labels }}"
-    - "-requiredlabels=${{ inputs.required-labels }}"
+    - "-exemptlabel=${{ inputs.exempt-labels }}"
+    - "-requiredlabel=${{ inputs.required-labels }}"

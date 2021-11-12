@@ -32,9 +32,7 @@ var (
 func main() {
 
 	flag.Parse()
-	for _, e := range os.Environ() {
-		log.Printf("the visible env variables %v\n", e)
-	}
+
 	if requiredlabel == "" {
 		log.Fatal("requiredlabels are not set")
 	}
@@ -83,20 +81,17 @@ func main() {
 					log.Printf("failed to list status %v\n", err)
 					continue
 				}
-				log.Printf("the status for %s/%s with SHA %s is %v", owner, repo, re.GetHead().GetSHA(), rs)
 
 				creq, _, err := client.Issues.ListComments(context.Background(), owner, repo, prNumber, &github.IssueListCommentsOptions{})
 				if err != nil {
 					log.Printf("failed to list comments %v\n", err)
 				}
-				log.Printf("the comments for %s/%s PR %d is %v\n", owner, repo, prNumber, creq)
-				// check if retest limit is  reached
 
 				for _, r := range rs {
 					log.Printf("found context %s with status %s\n", r.GetContext(), r.GetState())
 					if r.GetState() == "failed" {
 						log.Printf("found failed test %s\n", r.GetContext())
-
+						// check if retest limit is reached
 						retestCount := 0
 						msg := fmt.Sprintf("/retest %s", r.GetContext())
 						for _, pc := range creq {
@@ -104,13 +99,12 @@ func main() {
 								retestCount += 1
 							}
 						}
-						log.Printf("tried retry %d and remaining retry %d\n", retestCount, retry-retestCount)
+						log.Printf("found %d retries and remaining %d retries\n", retestCount, retry-retestCount)
 						if retestCount >= int(retry) {
 							log.Printf("Pull Requested %d: %q reached  maximum attempt. skipping retest %v\n", prNumber, r.GetContext(), retestCount)
 							continue
 						}
 						comment := &github.IssueComment{
-
 							Body: github.String(msg),
 						}
 						_, _, err := client.Issues.CreateComment(context.Background(), owner, repo, prNumber, comment)

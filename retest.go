@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/google/go-github/github"
@@ -13,9 +14,9 @@ import (
 )
 
 var (
-	retry         = flag.Int("maxretry", 5, "Maximum retry of retest of a test in a Pull Request")
-	exemptlabel   = flag.String("exemptlabel", "DNM", "If the PullRequest is having this label, retest will be skipped")
-	requiredlabel = flag.String("requiredlabel", "", "If the PullRequest is having this label, retest will be tried for failed tests")
+	retryLimit    = os.Getenv("INPUT_MAXRETRY")
+	exemptlabel   = os.Getenv("INPUT_EXEMPT-LABEL")
+	requiredlabel = os.Getenv("INPUT_REQUIRED-LABEL")
 	githubToken   = os.Getenv("GITHUB_TOKEN")
 	owner, repo   = func() (string, string) {
 		if os.Getenv("GITHUB_REPOSITORY") != "" {
@@ -34,7 +35,7 @@ func main() {
 	for _, e := range os.Environ() {
 		log.Printf("the visible env variables %v\n", e)
 	}
-	if *requiredlabel == "" {
+	if requiredlabel == "" {
 		log.Fatal("requiredlabels are not set")
 	}
 
@@ -44,6 +45,11 @@ func main() {
 
 	if owner == "" || repo == "" {
 		log.Fatal("GITHUB_REPOSITORY is not set")
+	}
+
+	retry, err := strconv.Atoi(retryLimit)
+	if err != nil {
+		log.Fatalf("maxretry %q is not valid", retryLimit)
 	}
 
 	ctx := context.Background()
@@ -64,11 +70,11 @@ func main() {
 			for _, r := range re.Labels {
 				fmt.Println("found label", r.GetName())
 				// check if label is exempt
-				if strings.EqualFold(*exemptlabel, r.GetName()) {
+				if strings.EqualFold(exemptlabel, r.GetName()) {
 					continue
 				}
 				// check if label is matching
-				if !strings.EqualFold(*requiredlabel, r.GetName()) {
+				if !strings.EqualFold(requiredlabel, r.GetName()) {
 					continue
 				}
 
@@ -96,7 +102,8 @@ func main() {
 								retestCount += 1
 							}
 						}
-						if retestCount >= *retry {
+
+						if retestCount >= int(retry) {
 							log.Printf("Pull Requested %d: %q reached  maximum attempt. skipping retest %v\n", prNumber, r.GetContext(), retestCount)
 							continue
 						}

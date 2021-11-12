@@ -13,4 +13,4 @@ jobs:
       - uses: Madhu-1/retest-action@v0.0.1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          required-labels: "retest-required"
+          required-label: "retest-required"

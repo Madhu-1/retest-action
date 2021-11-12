@@ -1,0 +1,16 @@
+---
+name: "Retest pull Requests Github Action"
+# yamllint disable-line rule:truthy
+on:
+  schedule:
+    # Run the retest every 5 minutes
+    - cron: "05 * * * *"
+# yamllint disable rule:line-length
+jobs:
+  retest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Madhu-1/retest-action@v0.0.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          required-labels: "retest-required"

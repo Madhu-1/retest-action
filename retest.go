@@ -112,7 +112,7 @@ func main() {
 							log.Printf("failed to create comment %v\n", err)
 						}
 						//Post comment with target URL for retesting
-						msg = fmt.Sprintf("@%s %s test failed. Logs are available at %s for debugging", re.GetUser(), r.GetContext(), r.GetTargetURL())
+						msg = fmt.Sprintf("@%s %s test failed. Logs are available at [location](%s) for debugging", re.GetUser().GetLogin(), r.GetContext(), r.GetTargetURL())
 						comment.Body = github.String(msg)
 						_, _, err = client.Issues.CreateComment(context.Background(), owner, repo, prNumber, comment)
 						if err != nil {

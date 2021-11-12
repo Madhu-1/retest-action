@@ -77,7 +77,7 @@ func main() {
 				if !strings.EqualFold(requiredlabel, r.GetName()) {
 					continue
 				}
-
+				log.Printf("checking status for PR %d with label %s", prNumber, r.GetName())
 				rs, _, err := client.Repositories.ListStatuses(context.TODO(), owner, repo, re.GetHead().GetSHA(), &github.ListOptions{})
 				if err != nil {
 					log.Printf("failed to list status %v\n", err)
@@ -92,6 +92,7 @@ func main() {
 				// check if retest limit is  reached
 
 				for _, r := range rs {
+					log.Printf("found context %s with status %s\n", r.GetContext(), r.GetState())
 					if r.GetState() == "failed" {
 						log.Printf("found failed test %s\n", r.GetContext())
 
@@ -102,7 +103,7 @@ func main() {
 								retestCount += 1
 							}
 						}
-
+						log.Printf("tried retry %d and remaining retry %d\n", retestCount, retry-retestCount)
 						if retestCount >= int(retry) {
 							log.Printf("Pull Requested %d: %q reached  maximum attempt. skipping retest %v\n", prNumber, r.GetContext(), retestCount)
 							continue

@@ -17,5 +17,5 @@ jobs:
           paths:
             - "/go/pkg/mod"
       - run:
-          name: Run tests
+          name: Run build
           command: go build -v ./...

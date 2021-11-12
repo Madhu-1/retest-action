@@ -14,4 +14,4 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           required-label: "retest-required"
-          review-required-count: "2"
+          required-approve-count: "2"

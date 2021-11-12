@@ -15,7 +15,7 @@ import (
 
 var (
 	retryLimit          = os.Getenv("INPUT_MAX-RETRY")
-	requiredReviewCount = os.Getenv("INPUT_REQUIRED-REVIEW-COUNT")
+	requiredReviewCount = os.Getenv("INPUT_REQUIRED-APPROVE-COUNT")
 	exemptlabel         = os.Getenv("INPUT_EXEMPT-LABEL")
 	requiredlabel       = os.Getenv("INPUT_REQUIRED-LABEL")
 	githubToken         = os.Getenv("GITHUB_TOKEN")

@@ -6,8 +6,8 @@ inputs:
     description: "Maximum retry of retest of a test in a Pull Request"
     required: false
     default: "5"
-  review-required-count:
-    description: "Total number of reviews required on a Pull Request"
+  required-approve-count:
+    description: "Total number of approved review required on a Pull Request"
     required: true
     default: "2"
   exempt-label:

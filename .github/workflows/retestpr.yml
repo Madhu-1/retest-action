@@ -1,0 +1,15 @@
+---
+name: "Retest pull Request"
+# yamllint disable-line rule:truthy
+on:
+  push:
+    branches: [main]
+# yamllint disable rule:line-length
+jobs:
+  retest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Madhu-1/retest-action@main
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          required-label: "retest-required"

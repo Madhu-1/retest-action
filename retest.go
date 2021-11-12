@@ -29,7 +29,11 @@ var (
 )
 
 func main() {
+
 	flag.Parse()
+	for _, e := range os.Environ() {
+		log.Printf("the visible env variables %v\n", e)
+	}
 	if *requiredlabel == "" {
 		log.Fatal("requiredlabels are not set")
 	}

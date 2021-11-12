@@ -14,11 +14,12 @@ import (
 )
 
 var (
-	retryLimit    = os.Getenv("INPUT_MAXRETRY")
-	exemptlabel   = os.Getenv("INPUT_EXEMPT-LABEL")
-	requiredlabel = os.Getenv("INPUT_REQUIRED-LABEL")
-	githubToken   = os.Getenv("GITHUB_TOKEN")
-	owner, repo   = func() (string, string) {
+	retryLimit          = os.Getenv("INPUT_MAX-RETRY")
+	requiredReviewCount = os.Getenv("INPUT_REQUIRED-REVIEW-COUNT")
+	exemptlabel         = os.Getenv("INPUT_EXEMPT-LABEL")
+	requiredlabel       = os.Getenv("INPUT_REQUIRED-LABEL")
+	githubToken         = os.Getenv("GITHUB_TOKEN")
+	owner, repo         = func() (string, string) {
 		if os.Getenv("GITHUB_REPOSITORY") != "" {
 			if len(strings.Split(os.Getenv("GITHUB_REPOSITORY"), "/")) == 2 {
 				return strings.Split(os.Getenv("GITHUB_REPOSITORY"), "/")[0], strings.Split(os.Getenv("GITHUB_REPOSITORY"), "/")[1]
@@ -47,7 +48,12 @@ func main() {
 
 	retry, err := strconv.Atoi(retryLimit)
 	if err != nil {
-		log.Fatalf("maxretry %q is not valid", retryLimit)
+		log.Fatalf("max-retry %q is not valid", retryLimit)
+	}
+
+	totalRequiredReviews, err := strconv.Atoi(requiredReviewCount)
+	if err != nil {
+		log.Fatalf("required-review-count %q is not valid", requiredReviewCount)
 	}
 
 	ctx := context.Background()
@@ -82,6 +88,21 @@ func main() {
 					continue
 				}
 
+				rev, _, err := client.PullRequests.ListReviews(context.Background(), owner, repo, prNumber, &github.ListOptions{})
+				if err != nil {
+					log.Printf("failed to list reviews %v\n", err)
+					continue
+				}
+				approvedReviews := 0
+				for _, rv := range rev {
+					if rv.GetState() == "APPROVED" {
+						approvedReviews += 1
+					}
+				}
+				if !(approvedReviews >= totalRequiredReviews) {
+					log.Printf("total approvred reviews for PR %d are %d but required %d", prNumber, approvedReviews, totalRequiredReviews)
+					continue
+				}
 				creq, _, err := client.Issues.ListComments(context.Background(), owner, repo, prNumber, &github.IssueListCommentsOptions{})
 				if err != nil {
 					log.Printf("failed to list comments %v\n", err)

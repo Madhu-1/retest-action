@@ -3,8 +3,8 @@ name: "Retest pull Requests Github Action"
 # yamllint disable-line rule:truthy
 on:
   schedule:
-    # Run the retest every 5 minutes
-    - cron: "05 * * * *"
+    # Run the retest every 10 minutes
+    - cron: "*/10 * * * *"
 # yamllint disable rule:line-length
 jobs:
   retest:
@@ -14,3 +14,4 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           required-label: "retest-required"
+          review-required-count: "2"

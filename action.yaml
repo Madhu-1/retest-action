@@ -21,6 +21,3 @@ runs:
   image: Dockerfile
   env:
     GITHUB_TOKEN: "${{ inputs.GITHUB_TOKEN }}"
-  args:
-    - "-exemptlabel=${{ inputs.exempt-labels }}"
-    - "-requiredlabel=${{ inputs.required-labels }}"

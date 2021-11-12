@@ -13,3 +13,4 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           required-label: "retest-required"
+          maxretry: "10"

@@ -83,12 +83,13 @@ func main() {
 					log.Printf("failed to list status %v\n", err)
 					continue
 				}
+				log.Printf("the status for %s/%s with SHA %s is %v", owner, repo, re.GetHead().GetSHA(), rs)
 
 				creq, _, err := client.Issues.ListComments(context.Background(), owner, repo, prNumber, &github.IssueListCommentsOptions{})
 				if err != nil {
 					log.Printf("failed to list comments %v\n", err)
 				}
-
+				log.Printf("the comments for %s/%s PR %d is %v\n", owner, repo, prNumber, creq)
 				// check if retest limit is  reached
 
 				for _, r := range rs {

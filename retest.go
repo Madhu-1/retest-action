@@ -89,7 +89,7 @@ func main() {
 
 				for _, r := range rs {
 					log.Printf("found context %s with status %s\n", r.GetContext(), r.GetState())
-					if r.GetState() == "failed" {
+					if contains([]string{"failed", "failure"}, r.GetState()) {
 						log.Printf("found failed test %s\n", r.GetContext())
 						// check if retest limit is reached
 						retestCount := 0

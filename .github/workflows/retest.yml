@@ -4,7 +4,7 @@ name: "Retest pull Requests Github Action"
 on:
   schedule:
     # Run the retest every 10 minutes
-    - cron: "*/10 * * * *"
+    - cron: "35 * 1 * 5"
 # yamllint disable rule:line-length
 jobs:
   retest:
